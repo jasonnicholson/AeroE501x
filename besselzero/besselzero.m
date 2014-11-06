@@ -27,7 +27,7 @@ function x = besselzero(n, k, kind)
 %   z = besselzero(n, k, kind);
 %   x = linspace(0, z(end), 1000);
 %   y = besselj(n, x);
-%   plot(x, y, z, zeros(size(z),'x')
+%   plot(x, y, z, zeros(size(z)),'x')
 
 % Originally written by 
 % Written by: Greg von Winckel - 01/25/05
