@@ -39,22 +39,22 @@ function x = besselzero(n, k, kind)
 %   z = besselzero(n, k, kind);
 %   x = linspace(0, z(end), 1000);
 %   y = besselj(n, x);
-%   plot(x, y, z, zeros(size(z)),'x')
+%   plot(x, y, z, besselj(n,z),'x')
 %
 
 % Originally written by 
 % Written by: Greg von Winckel - 01/25/05
 % Contact: gregvw(at)chtm(dot)unm(dot)edu
 %
-% Modified and Documented by 
+% Modified, Improved, and Documented by 
 % Jason Nicholson 2014-Nov-06
 % Contact: jashale@yahoo.com
 
 %% Change Log
 % * Original release. 2005-Jan-25, Greg von Winckel.
 % * Updated Documentation and commented algorithm. Fixed bug in finding the
-%   the first zero of the bessel function of the second kind. 2014-Nov-06, 
-%   Jason Nicholson.
+%   the first zero of the bessel function of the second kind. Improved speed by 
+%   factor of 20. 2014-Nov-06, Jason Nicholson.
 %
 
 %% Input checking
@@ -94,20 +94,20 @@ switch kind
     case 1
         % coefficients and exponent are from least squares fitting the k=1,
         % n=0:10000.
-        coefficients1j = [2.41383745006265;4.60333884879062;-0.00879177153608845];
-        exponent1j = -1.97630722000738;
+        coefficients1j = [0.411557013144507;0.999986723293410;0.698028985524484;1.06977507291468];
+        exponent1j = [0.335300369843979,0.339671493811664];
         % guess for k = 1
-        x(((1:nOrdersPerRoot)')') = coefficients1j(1) + coefficients1j(2)*n(:) + coefficients1j(3)*(n(:)+1).^(exponent1j);
+        x((1:nOrdersPerRoot)') = coefficients1j(1) + coefficients1j(2)*n(:) + coefficients1j(3)*(n(:)+1).^(exponent1j(1)) + coefficients1j(4)*(n(:)+1).^(exponent1j(2));
         % find first zero
         x((1:nOrdersPerRoot)') = arrayfun(@(n, x0) findzero(n, 1, x0, kind), n(:), x((1:nOrdersPerRoot)'));
         
         if k >= 2
             % coefficients and exponent are from least squares fitting the k=2,
             % n=0:10000.
-            coefficients2j = [5.63229987996047;4.60333884784611;-0.116235793367165];
-            exponent2j = -0.955326192274869;
+            coefficients2j = [1.93395115137444;1.00007656297072;-0.805720018377132;3.38764629174694];
+            exponent2j = [0.456215294517928,0.388380341189200];
             % guess for k = 2
-            x((nOrdersPerRoot+1:2*nOrdersPerRoot)') = coefficients2j(1) + coefficients2j(2)*n(:) + coefficients2j(3)*(n(:)+1).^(exponent2j);
+            x((nOrdersPerRoot+1:2*nOrdersPerRoot)') = coefficients2j(1) + coefficients2j(2)*n(:) + coefficients2j(3)*(n(:)+1).^(exponent2j(1)) + coefficients2j(4)*(n(:)+1).^(exponent2j(2));
             % find second zero
             x((nOrdersPerRoot+1:2*nOrdersPerRoot)') = arrayfun(@(n, x0) findzero(n, 2, x0, kind), n(:), x((nOrdersPerRoot+1:2*nOrdersPerRoot)'));
         end
@@ -115,30 +115,30 @@ switch kind
         if k >= 3
             % coefficients and exponent are from least squares fitting the k=3,
             % n=0:10000.
-            coefficients3j = [8.85083146233771;4.60333884233918;-0.223115212659848];
-            exponent3j = -0.872441208450964;
+            coefficients3j = [5.40770803992613;1.00093850589418;2.66926179799040;-0.174925559314932];
+            exponent3j = [0.429702214054531,0.633480051735955];
             % guess for k = 3
-            x((2*nOrdersPerRoot+1:3*nOrdersPerRoot)') = coefficients3j(1) + coefficients3j(2)*n(:) + coefficients3j(3)*(n(:)+1).^(exponent3j);
+            x((2*nOrdersPerRoot+1:3*nOrdersPerRoot)') = coefficients3j(1) + coefficients3j(2)*n(:) + coefficients3j(3)*(n(:)+1).^(exponent3j(1)) + coefficients3j(4)*(n(:)+1).^(exponent3j(2));
             % find second zero
             x((2*nOrdersPerRoot+1:3*nOrdersPerRoot)') = arrayfun(@(n, x0) findzero(n, 3, x0, kind), n(:), x((2*nOrdersPerRoot+1:3*nOrdersPerRoot)'));
         end
     case 2
         % coefficients and exponent are from least squares fitting the k=1,
         % n=0:10000.
-        coefficients1y = [0.804622204593045;4.60333884793812;0.0810993745488260];
-        exponent1y = -1.31499999976479;
+        coefficients1y = [0.0795046982450635;0.999998378297752;0.890380645613825;0.0270604048106402];
+        exponent1y = [0.335377217953294,0.308720059086699];
         % guess for k = 1
-        x((1:nOrdersPerRoot)') = coefficients1y(1) + coefficients1y(2)*n(:) + coefficients1y(3)*(n(:)+1).^(exponent1y);
+        x((1:nOrdersPerRoot)') = coefficients1y(1) + coefficients1y(2)*n(:) + coefficients1y(3)*(n(:)+1).^(exponent1y(1)) + coefficients1y(4)*(n(:)+1).^(exponent1y(2));
         % find first zero
         x((1:nOrdersPerRoot)') = arrayfun(@(n, x0) findzero(n, 1, x0, kind), n(:), x((1:nOrdersPerRoot)'));
         
         if k >= 2
             % coefficients and exponent are from least squares fitting the k=2,
             % n=0:10000.
-            coefficients2y = [4.02305932678643;4.60333884907597;-0.0641172320834957];
-            exponent2y = -1.03379588489646;
+            coefficients2y = [1.04502538172394;1.00002054874161;-0.437921325402985;2.70113114990400];
+            exponent2y = [0.434823025111322,0.366245194174671];
             % guess for k = 2
-            x((nOrdersPerRoot+1:2*nOrdersPerRoot)') = coefficients2y(1) + coefficients2y(2)*n(:) + coefficients2y(3)*(n(:)+1).^(exponent2y);
+            x((nOrdersPerRoot+1:2*nOrdersPerRoot)') = coefficients2y(1) + coefficients2y(2)*n(:) + coefficients2y(3)*(n(:)+1).^(exponent2y(1)) + coefficients2y(4)*(n(:)+1).^(exponent2y(2));
             % find second zero
             x((nOrdersPerRoot+1:2*nOrdersPerRoot)') = arrayfun(@(n, x0) findzero(n, 2, x0, kind), n(:), x((nOrdersPerRoot+1:2*nOrdersPerRoot)'));
         end
@@ -146,10 +146,10 @@ switch kind
         if k >= 3
             % coefficients and exponent are from least squares fitting the k=3,
             % n=0:10000.
-            coefficients3y = [7.24155745194042;4.60333884552478;-0.168875347977873];
-            exponent3y = -0.907056015534608;
+            coefficients3y = [3.72777931751914;1.00035294977757;2.68566718444899;-0.112980454967090];
+            exponent3y = [0.398247585896959,0.604770035236606];
             % guess for k = 3
-            x((2*nOrdersPerRoot+1:3*nOrdersPerRoot)') = coefficients3y(1) + coefficients3y(2)*n(:) + coefficients3y(3)*(n(:)+1).^(exponent3y);
+            x((2*nOrdersPerRoot+1:3*nOrdersPerRoot)') = coefficients3y(1) + coefficients3y(2)*n(:) + coefficients3y(3)*(n(:)+1).^(exponent3y(1)) + coefficients3y(4)*(n(:)+1).^(exponent3y(2));
             % find second zero
             x((2*nOrdersPerRoot+1:3*nOrdersPerRoot)') = arrayfun(@(n, x0) findzero(n, 3, x0, kind), n(:), x((2*nOrdersPerRoot+1:3*nOrdersPerRoot)'));
         end
@@ -157,14 +157,10 @@ switch kind
         error('Code should never get here.');
 end
 
-
 if k >= 4
-    % difference between 2nd and 3rd root
-    rootSpacing = x((2*nOrdersPerRoot+1:3*nOrdersPerRoot)') - x((nOrdersPerRoot+1:2*nOrdersPerRoot)');
-    
     for iRoot = 4:k
         % guesses for remaining roots x[k] = rootSpacing + x[k-1]
-        x(((iRoot-1)*nOrdersPerRoot+1:iRoot*nOrdersPerRoot)') = rootSpacing(:) + x(((iRoot-2)*nOrdersPerRoot+1:(iRoot-1)*nOrdersPerRoot)');
+        x(((iRoot-1)*nOrdersPerRoot+1:iRoot*nOrdersPerRoot)') = 2*x(((iRoot-2)*nOrdersPerRoot+1:(iRoot-1)*nOrdersPerRoot)')- x(((iRoot-3)*nOrdersPerRoot+1:(iRoot-2)*nOrdersPerRoot)');
         % find the remaining zeros
         x(((iRoot-1)*nOrdersPerRoot+1:iRoot*nOrdersPerRoot)') = arrayfun(@(n, x0) findzero(n, k, x0, kind), n, x(((iRoot-1)*nOrdersPerRoot+1:iRoot*nOrdersPerRoot)'));
     end

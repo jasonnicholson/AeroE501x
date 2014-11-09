@@ -5,7 +5,7 @@ n = 10000;
 z = nan(k, n+1);
 
 initialGuess = 2.2;
-stepSize = pi/2;
+stepSize = 0.25;
 currentGuess = initialGuess;
 nextGuess = initialGuess +0.5;
 yCurrent = besselj(0,currentGuess);
@@ -43,3 +43,12 @@ toc;
 [kk, nn] = ndgrid(1:k, 0:n);
 zz = z;
 save('zeroes.mat', 'kk', 'nn', 'zz');
+
+for iN=0:100:n
+    figure('name', sprintf('k=%d',iN),'position', [993,1,927,973]);
+    x = linspace(zz(1,iN+1)-2*pi, zz(10,iN+1)+1, 200);
+    y = besselj(iN,x);
+    plot(x,y,zz(1:10,iN+1),besselj(iN,zz(1:10,iN+1)),'rx','MarkerSize',10);
+    axis('tight');
+    drawnow();
+end
