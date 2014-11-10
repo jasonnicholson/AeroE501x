@@ -6,9 +6,13 @@ function x = besselzero(n, k, kind)
 %   x = besselzero(n, k, kind)
 %
 %% Inputs
-% * n - The order of the bessel function. n can be a scalar, vector, or
+% * *n* - The order of the bessel function. n can be a scalar, vector, or
 %       matrix.  n can be positive, negative, fractional, or any
-%       combinaiton.
+%       combinaiton. abs(n) must be less than or equal to
+%       146222.16674537213 or 370030.762407380 for first and second kind
+%       respectively. Above these values, this algorithm will not find the
+%       correct zeros because of the starting values therefore an error is
+%       thrown instead.
 % * k - The number of postive zeros to calculate.  When k is not supplied,
 %       k = 5 is the default. k must be a scalar.
 % * kind - kind is either 1 or 2. When kind is not supplied, default is
@@ -31,15 +35,27 @@ function x = besselzero(n, k, kind)
 % order.  Once the 2nd and 3rd roots are found, the spacing can be
 % approximated by the distance between the 2nd and 3rd root.  Then again
 % Halley's method can be applied to precisely locate the root.
+%%
+% Because the algorithm depends on good guesses of the first three zeros,
+% if the guess is to far away then Halley's method will converge to the
+% wrong zero which will subsequently cause any other zero to be incorrectly
+% located. Therefore, a limit is put on abs(n) of 146222.16674537213 and
+% 370030.762407380 for first and second kind respectively.  If n is
+% specified above these limits, then an error is thrown.
 %
 %% Example
-%   n = 1;
+%   n = (1:2)';
 %   k = 10;
 %   kind = 1;
 %   z = besselzero(n, k, kind);
 %   x = linspace(0, z(end), 1000);
-%   y = besselj(n, x);
-%   plot(x, y, z, besselj(n,z),'x')
+%   y = nan(2, length(x));
+%   y(1,:) = besselj(n(1), x);
+%   y(2,:) = besselj(n(2), x);
+%   nz = nan(size(z));
+%   nz(1,:) = besselj(n(1), z(1,:));
+%   nz(2,:) = besselj(n(2), z(2,:));
+%   plot(x, y, z, nz,'kx')
 %
 
 % Originally written by 
@@ -73,6 +89,17 @@ assert(isscalar(kind) & any(kind == [1 2]), '''kind''must be a scalar with value
 assert(isscalar(k) & fix(k)==k & k>0, 'k must a positive scalar integer.');
 assert(all(isreal(n(:))), 'n must be a real number.');
 
+% negative orders have the same roots as the positive orders
+n = abs(n);
+
+% Check for that n is less than the ORDER_MAX
+if kind==1
+    ORDER_MAX = 146222.16674537213;
+    assert(all(n <= ORDER_MAX), 'all n values must be less than or equal %6.10f for kind=1.', ORDER_MAX);
+elseif kind==2
+    ORDER_MAX = 370030.762407380;
+    assert(all(n(:) <= ORDER_MAX), 'all n values must be less than or equal %6.10f for kind=2.', ORDER_MAX);
+end
 %% Setup Arrays
 
 % output size
@@ -85,9 +112,6 @@ end
 % number of orders for each kth root
 nOrdersPerRoot = prod(outputSize(1:end-1));
 x = nan(outputSize);
-
-% negative orders have the same roots as the positive orders
-n = abs(n);
 
 %% Solve for Roots
 switch kind
