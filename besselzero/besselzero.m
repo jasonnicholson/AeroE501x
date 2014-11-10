@@ -199,7 +199,7 @@ function x=findzero(n,k,x0,kind)
 % http://en.wikipedia.org/wiki/Halley's_method
 
 ITERATIONS_MAX = 100;       % Maximum number of iteration
-TOLERANCE_RELATIVE = 1e4;   % 16-4 = 11 significant digits
+TOLERANCE_RELATIVE = 1e4;   % 16-4 = 12 significant digits
 
 % Setup loop
 error = 1;

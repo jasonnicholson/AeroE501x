@@ -69,7 +69,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
   </style></head><body><div class="content"><h1>besselzero</h1><!--introduction--><p>besselzero calculates the zeros of Bessel function of the first and second kind</p><pre class="language-matlab">x = besselzero(n)
 x = besselzero(n, k)
 x = besselzero(n, k, kind)
-</pre><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Inputs</a></li><li><a href="#2">Outputs</a></li><li><a href="#3">Description</a></li><li><a href="#4">Algorithm</a></li><li><a href="#5">Example</a></li><li><a href="#6">Authorship</a></li><li><a href="#7">Change Log</a></li></ul></div><h2>Inputs<a name="1"></a></h2><div><ul><li><b>n</b> - The order of the bessel function. n can be a scalar, vector, or       matrix.  n can be positive, negative, fractional, or any       combinaiton. abs(n) must be less than or equal to       146222.16674537213 or 370030.762407380 for first and second kind       respectively. Above these values, this algorithm will not find the       correct zeros because of the starting values therefore an error is       thrown instead.</li><li><b>k</b> - The number of postive zeros to calculate.  When k is not supplied,       k = 5 is the default. k must be a scalar.</li><li><b>kind</b> - kind is either 1 or 2. When kind is not supplied, default is          kind = 1.</li></ul></div><h2>Outputs<a name="2"></a></h2><div><ul><li><b>x</b> - The calculated zeros.  size(x) = [size(n) k].</li></ul></div><h2>Description<a name="3"></a></h2><p>besselzero calculates the first k positive zeros of nth order bessel function of the first or second kind.  Note, that x=0 is not included as the first zero.</p><h2>Algorithm<a name="4"></a></h2><p>the first three roots of any order bessel can be approximated by a simple equations.  These equations were generated using a least squares fit of the roots from orders of n=0:10000. The approximation is used to start the iteration of Halley's method.  The 4th and higher roots can be approximated by understanding the roots are regularly spaced for a given order.  Once the 2nd and 3rd roots are found, the spacing can be approximated by the distance between the 2nd and 3rd root.  Then again Halley's method can be applied to precisely locate the root.</p><h2>Example<a name="5"></a></h2><pre class="codeinput">n = (1:2)';
+</pre><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Inputs</a></li><li><a href="#2">Outputs</a></li><li><a href="#3">Description</a></li><li><a href="#4">Algorithm</a></li><li><a href="#6">Example</a></li><li><a href="#7">Authorship</a></li><li><a href="#8">Change Log</a></li></ul></div><h2>Inputs<a name="1"></a></h2><div><ul><li><b>n</b> - The order of the bessel function. n can be a scalar, vector, or       matrix.  n can be positive, negative, fractional, or any       combinaiton. abs(n) must be less than or equal to       146222.16674537213 and 370030.762407380 for first and second kind       respectively.</li><li><b>k</b> - The number of postive zeros to calculate.  When k is not supplied,       k = 5 is the default. k must be a scalar.</li><li><b>kind</b> - kind is either 1 or 2. When kind is not supplied, default is          kind = 1.</li></ul></div><h2>Outputs<a name="2"></a></h2><div><ul><li><b>x</b> - The calculated zeros.  size(x) = [size(n) k].</li></ul></div><h2>Description<a name="3"></a></h2><p>besselzero calculates the first k positive zeros of nth order bessel function of the first or second kind.  Note, that x=0 is not included as the first zero.</p><h2>Algorithm<a name="4"></a></h2><p>the first three roots of any order bessel can be approximated by a simple equations.  These equations were generated using a least squares fit of the roots from orders of n=0:10000. The approximation is used to start the iteration of Halley's method.  The 4th and higher roots can be approximated by understanding the roots are regularly spaced for a given order.  Once the 2nd and 3rd roots are found, the spacing can be approximated by the distance between the 2nd and 3rd root.  Then again Halley's method can be applied to precisely locate the root.</p><p>Because the algorithm depends on good guesses of the first three zeros, if the guess is to far away then Halley's method will converge to the wrong zero which will subsequently cause any other zero to be incorrectly located. Therefore, a limit is put on abs(n) of 146222.16674537213 and 370030.762407380 for first and second kind respectively.  If n is specified above these limits, then an error is thrown.</p><h2>Example<a name="6"></a></h2><pre class="codeinput">n = (1:2)';
 k = 10;
 kind = 1;
 z = besselzero(n, k, kind);
@@ -81,7 +81,7 @@ nz = nan(size(z));
 nz(1,:) = besselj(n(1), z(1,:));
 nz(2,:) = besselj(n(2), z(2,:));
 plot(x, y, z, nz,<span class="string">'kx'</span>)
-</pre><img vspace="5" hspace="5" src="besselzeroDoc_01.png" alt=""> <h2>Authorship<a name="6"></a></h2><p>Originally written by Written by: Greg von Winckel - 01/25/05 Contact: gregvw(at)chtm(dot)unm(dot)edu</p><p>Modified, Improved, and Documented by Jason Nicholson 2014-Nov-06 Contact: <a href="mailto:jashale@yahoo.com">jashale@yahoo.com</a></p><h2>Change Log<a name="7"></a></h2><div><ul><li>Original release. 2005-Jan-25, Greg von Winckel.</li><li>Updated Documentation and commented algorithm. Fixed bug in finding the   the first zero of the bessel function of the second kind. Improved speed by   factor of 20. 2014-Nov-06, Jason Nicholson.</li></ul></div><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014b</a><br></p></div><!--
+</pre><img vspace="5" hspace="5" src="besselzeroDoc_01.png" alt=""> <h2>Authorship<a name="7"></a></h2><p>Originally written by Written by: Greg von Winckel - 01/25/05 Contact: gregvw(at)chtm(dot)unm(dot)edu</p><p>Modified, Improved, and Documented by Jason Nicholson 2014-Nov-06 Contact: <a href="mailto:jashale@yahoo.com">jashale@yahoo.com</a></p><h2>Change Log<a name="8"></a></h2><div><ul><li>Original release. 2005-Jan-25, Greg von Winckel.</li><li>Updated Documentation and commented algorithm. Fixed bug in finding the   the first zero of the bessel function of the second kind. Improved speed by   factor of 20. 2014-Nov-06, Jason Nicholson.</li></ul></div><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% besselzero
 % besselzero calculates the zeros of Bessel function of the first and second kind 
@@ -94,10 +94,8 @@ plot(x, y, z, nz,<span class="string">'kx'</span>)
 % * *n* - The order of the bessel function. n can be a scalar, vector, or
 %       matrix.  n can be positive, negative, fractional, or any
 %       combinaiton. abs(n) must be less than or equal to
-%       146222.16674537213 or 370030.762407380 for first and second kind
-%       respectively. Above these values, this algorithm will not find the
-%       correct zeros because of the starting values therefore an error is
-%       thrown instead.
+%       146222.16674537213 and 370030.762407380 for first and second kind
+%       respectively. 
 % * *k* - The number of postive zeros to calculate.  When k is not supplied,
 %       k = 5 is the default. k must be a scalar.
 % * *kind* - kind is either 1 or 2. When kind is not supplied, default is
@@ -120,6 +118,13 @@ plot(x, y, z, nz,<span class="string">'kx'</span>)
 % order.  Once the 2nd and 3rd roots are found, the spacing can be
 % approximated by the distance between the 2nd and 3rd root.  Then again
 % Halley's method can be applied to precisely locate the root.
+%%
+% Because the algorithm depends on good guesses of the first three zeros,
+% if the guess is to far away then Halley's method will converge to the
+% wrong zero which will subsequently cause any other zero to be incorrectly
+% located. Therefore, a limit is put on abs(n) of 146222.16674537213 and
+% 370030.762407380 for first and second kind respectively.  If n is
+% specified above these limits, then an error is thrown.
 %
 %% Example
 n = (1:2)';
